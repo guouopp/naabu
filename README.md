@@ -46,6 +46,8 @@ This will display help for the tool. Here are all the switches it supports.
 | Flag | Description | Example |
 |------|-------------|---------|
 | -host | Host to find ports for | naabu -host 192.168.1.1 | 
+| -host | CIDR to find ports for | naabu -host 173.0.84.0/24 | 
+| -host | Domain/subdomain to find ports for | naabu -host uber.com | 
 | -hL | File containing list of hosts to enumerate ports | naabu -hL hosts.txt | 
 | -ports | Ports to enumerate for on hosts (top-100, top-1000, full, custom) | naabu -ports 80,443 |
 | -ports-file | File containing ports to enumerate for on hosts | naabu -ports-file ports.txt | 
@@ -60,6 +62,8 @@ This will display help for the tool. Here are all the switches it supports.
 | -nC | Don't Use colors in output | naabu -nC | 
 | -t | Number of concurrent goroutines for scanning (default 10) | naabu -t 10 |
 | -timeout | Millisecond to wait before timing out (default 700) | naabu -timeout 1000 |
+| -exclude | Ip's to exclude for port scan | naabu -exclude 127.0.0.1, 0.0.0.0 |
+| -exclude-file | List of ip's to exclude for port scan | naabu -exclude-file internal-hosts.txt |
 | -exclude-ports |  Ports to exclude from enumeration | naabu -exclude-ports 80,443 |
 | -verify | Validate the ports again | naabu -verify |
 | -version | Show version of naabu | naabu -version |
@@ -77,7 +81,7 @@ directly `go get` it or download and run the binary.
 naabu requires go1.13+ to install successfully. Run the following command to get the repo - 
 
 ```bash
-go get -v github.com/projectdiscovery/naabu/cmd/naabu
+GO111MODULE=on go get -v github.com/projectdiscovery/naabu/cmd/naabu
 ```
 
 You also need the following libraries installed for the `go get` to work - `libpcap, libpcap-dev`.
