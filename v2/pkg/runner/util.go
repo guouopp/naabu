@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"runtime"
 
 	"github.com/projectdiscovery/gologger"
+	"github.com/projectdiscovery/mapcidr"
 )
 
 func isRoot() bool {
@@ -16,15 +18,15 @@ func (r *Runner) host2ips(target string) (targetIPs []string, err error) {
 	// If the host is a Domain, then perform resolution and discover all IP
 	// addresses for a given host. Else use that host for port scanning
 	if net.ParseIP(target) == nil {
-		var ips []net.IP
-		ips, err = net.LookupIP(target)
+		var ips []string
+		ips, err = r.dnsclient.Lookup(target)
 		if err != nil {
 			gologger.Warningf("Could not get IP for host: %s\n", target)
 			return
 		}
 		for _, ip := range ips {
-			if ip.To4() != nil {
-				targetIPs = append(targetIPs, ip.String())
+			if mapcidr.IsIPv4(net.ParseIP(ip)) {
+				targetIPs = append(targetIPs, ip)
 			}
 		}
 
@@ -37,4 +39,8 @@ func (r *Runner) host2ips(target string) (targetIPs []string, err error) {
 	}
 
 	return
+}
+
+func isOSSupported() bool {
+	return runtime.GOOS == "linux" || runtime.GOOS == "darwin"
 }
